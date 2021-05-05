@@ -25,6 +25,9 @@ public class ClienteTCPBasico extends JFrame implements Runnable {
 	private DataOutputStream out;
 	private Thread listener;
 
+	// trocar o nome do host caso queira testar
+	private static String host = "Paulo";
+
 	private static final long serialVersionUID = 7807451284291881701L;
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
@@ -54,6 +57,9 @@ public class ClienteTCPBasico extends JFrame implements Runnable {
 		// lê msgs do teclado e manda pro servidor
 		this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+
+		out.writeUTF(this.host);
+		out.flush();
 
 		this.listener = new Thread(this);
 		this.listener.start();
@@ -96,6 +102,7 @@ public class ClienteTCPBasico extends JFrame implements Runnable {
 		saida.setRows(5);
 		jScrollPane1.setViewportView(saida);
 
+		usuarioLogado.setText(host);
 		usuarioLogado.setEnabled(false);
 		usuarioLogado.setDisabledTextColor(Color.BLACK);
 
@@ -157,7 +164,6 @@ public class ClienteTCPBasico extends JFrame implements Runnable {
 			while (true) {
 				String msg = this.in.readUTF();
 				this.saida.append(msg);
-				usuarioLogado.setText(socket.getInetAddress().getHostName());
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
